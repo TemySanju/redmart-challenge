@@ -9,8 +9,8 @@ import java.util.Scanner;
 public class SkiChallenge {
 	static List<Point> nonEligibleList = new ArrayList<>();
 	static int max = -1;
-	static int maxDrop =-1;
-	static int startX =-1;
+	static int maxDrop = -1;
+	static int startX = -1;
 	static int startY = -1;
 	static int depth = -1;
 	static int[][] inputArray;
@@ -41,8 +41,8 @@ public class SkiChallenge {
 	}
 	
 	public static void getLongestPath(){
-		for(int i=0;i<inputArray.length;i++){
-				for (int j=0;j<inputArray.length;j++){
+		for(int i=0;i<rowSize;i++){
+				for (int j=0;j<columnSize;j++){
 					if(nonEligibleList.contains(new Point(i,j))){
 						continue;
 					}
@@ -51,38 +51,24 @@ public class SkiChallenge {
 						max = depth;
 						startX = i;
 						startY = j;
-						entries.clear();
-						currentEntries.clear();
-						maxDrop = -1;
-					} else if (max == depth){
-						entries.clear();
-						currentEntries.clear();
-						entries = findPath(startX,startY);
-						currentEntries = findPath(i,j);
+					} else if (max == depth) {
+						List<Point> entries = findPath(startX,startY);
+						List<Point> currentEntries = findPath(i,j);
 						int startDrop= inputArray[entries.get(entries.size() -1).x][entries.get(entries.size() -1).y] - inputArray[entries.get(0).x][entries.get(0).y];
 						int currentDrop= inputArray[currentEntries.get(currentEntries.size() -1).x][currentEntries.get(currentEntries.size() -1).y] - inputArray[currentEntries.get(0).x][currentEntries.get(0).y];
-						if(startDrop > currentDrop){
-							maxDrop = startDrop;
-						}else {
+						if(startDrop < currentDrop){
 							startX = i;
 							startY = j;
-							entries.clear();
-							maxDrop = currentDrop;
-							entries.addAll(currentEntries);
 						}
 					}
 				}
 			}
-			if(!entries.isEmpty()){
-				System.out.println(max +"--"+maxDrop);
-			}
-			else{
-				entries = findPath(startX,startY);
-				if(!entries.isEmpty()){
-					maxDrop= inputArray[entries.get(0).x][entries.get(0).y] - inputArray[entries.get(entries.size() -1).x][entries.get(entries.size() -1).y];
+			
+			List<Point> checkEntries = findPath(startX,startY);
+			if(!checkEntries.isEmpty()) {
+				maxDrop = inputArray[checkEntries.get(checkEntries.size() -1).x][checkEntries.get(checkEntries.size() -1).y] - inputArray[checkEntries.get(0).x][checkEntries.get(0).y];
 				}
-				System.out.println(max +"--"+ maxDrop);
-			}
+			System.out.println(max +"--"+ maxDrop);
 	}
 	
 	/*private static void printElements(List<Point> list) {
@@ -183,7 +169,6 @@ public class SkiChallenge {
 			for (int j=0;j<columnSize;j++){
 				inputArray[i][j]= sc.nextInt();
 			}
-			sc.nextLine();
 		}
 		getLongestPath();
 	}
